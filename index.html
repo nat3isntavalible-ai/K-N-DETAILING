@@ -872,32 +872,65 @@
 
     <div class="contact-form">
       <div class="form-title">Request a Quote</div>
-      <div class="form-group">
-        <label>Your Name</label>
-        <input type="text" placeholder="John Smith">
-      </div>
-      <div class="form-group">
-        <label>Phone / Email</label>
-        <input type="text" placeholder="(555) 000-0000">
-      </div>
-      <div class="form-group">
-        <label>Vehicle</label>
-        <input type="text" placeholder="2021 Honda Accord">
-      </div>
-      <div class="form-group">
-        <label>Service Needed</label>
-        <select>
-          <option value="">Select a service...</option>
-          <option>Express Wash & Shine — $30+</option>
-          <option>Premium Interior & Exterior Detail — $60+</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Notes (optional)</label>
-        <textarea placeholder="Any specific concerns or requests?"></textarea>
-      </div>
-      <button class="btn-submit">Send My Request →</button>
+      <form action="https://formspree.io/f/xeewrggj" method="POST" id="quoteForm">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" name="name" placeholder="John Smith" required>
+        </div>
+        <div class="form-group">
+          <label>Phone / Email</label>
+          <input type="text" name="contact" placeholder="(555) 000-0000" required>
+        </div>
+        <div class="form-group">
+          <label>Vehicle</label>
+          <input type="text" name="vehicle" placeholder="2021 Honda Accord" required>
+        </div>
+        <div class="form-group">
+          <label>Service Needed</label>
+          <select name="service" required>
+            <option value="">Select a service...</option>
+            <option>Express Wash & Shine — $30+</option>
+            <option>Premium Interior & Exterior Detail — $60+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Notes (optional)</label>
+          <textarea name="notes" placeholder="Any specific concerns or requests?"></textarea>
+        </div>
+        <input type="hidden" name="_subject" value="New Quote Request — K&N Premium Detailing">
+        <input type="hidden" name="_next" value="">
+        <button type="submit" class="btn-submit">Send My Request →</button>
+        <p id="form-success" style="display:none; margin-top:14px; color:var(--yellow); font-weight:700; text-align:center; letter-spacing:1px;">✅ Request sent! We'll be in touch soon.</p>
+      </form>
     </div>
+
+    <script>
+      const form = document.getElementById('quoteForm');
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = form.querySelector('.btn-submit');
+        btn.textContent = 'Sending...';
+        btn.disabled = true;
+        try {
+          const res = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json' }
+          });
+          if (res.ok) {
+            form.reset();
+            btn.style.display = 'none';
+            document.getElementById('form-success').style.display = 'block';
+          } else {
+            btn.textContent = 'Error — Try Again';
+            btn.disabled = false;
+          }
+        } catch {
+          btn.textContent = 'Error — Try Again';
+          btn.disabled = false;
+        }
+      });
+    </script>
   </div>
 </section>
 
